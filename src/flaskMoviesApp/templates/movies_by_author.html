@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Ταινίες του {{ author.username }}
+{% endblock title %}
+
+{% block content %}
+
+    <h2 class="aba_header">Ταινίες απο το χρήστη {{ author.username }} 
+    <img class="rounded-circle profile-image" alt="{{ author.username }}" src="{{ url_for('static', filename='images/profiles_images/'+author.profile_image) }}" data-holder-rendered="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ author.username }}"></h2>
+
+    <hr>
+
+    <!-- Τα παρακάτω δύο κουμπιά θα πρέπει να ταξινομούν τη λίστα ανά βαθμολογία ή έτους πρώτης προβολής αντίστοιχα -->
+
+    <div class="align-buttons">
+      <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('movies_by_author', author_id=author.id, ordering_by='rating') }}">Ταξινόμηση βάσει βαθμολογίας</a> &nbsp;&nbsp;&nbsp;
+      <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('movies_by_author', author_id=author.id, ordering_by='release_year') }}">Ταξινόμηση βάσει έτους προβολής</a>
+    </div>
+    <hr>
+
+
+    <hr>
+
+    {% if movies %}
+        <!-- Εδώ πρέπει να μπεί ο κώδικας που εμφανίζει τη λίστα με τις ταινίες του συγκεκριμένου χρήστη -->
+
+        <!-- Αρχικά θα είναι η εικόνα, από κάτω ο τίτλος και δίπλα από τον τίτλο το έτος πρώτης προβολής και το rating -->
+        <!-- Στην εικόνα καθορίστε το "height=480px" χωρίς να βάλετε width ώστε να μην παραμορφώνεται -->
+        <!-- κάτω από τον τίτλο θα είναι η πλοκή/υπόθεση της ταινίας κομμένη στους 255 χαρακτήρες -->
+        <!-- τέλος, κάτω από την πλοκή θα είναι ο χρήστης που εισήγαγε την ταινία με το εικονίδιό του -->
+        <!-- Πατώντας στον τίτλο της ταινίας θα μας πηγαίνει στη σελίδα όπου μπορούμε να δούμε τα πλήρη στοιχεία της -->
+        
+        <!-- Η λίστα των ταινιών θα πρέπει από default να είναι ταξινομημένες ανά φθίνουσα ημερομηνία εισαγωγής τους -->
+
+      <div>
+        <!-- Εδώ θα πρέπει να μπεί ο κώδικας για το pagination της σελίδας (παρομοίως με την αρχική σελίδα) -->
+      </div>
+
+    {% else %}
+      <div class="alert alert-info alert-dismissible fade show" role="alert">Δε βρέθηκε καμμία ταινία</div>
+    {% endif %}
+
+{% endblock %}

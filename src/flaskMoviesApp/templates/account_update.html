@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Ενημέρωση Λογαριασμού</title>
+{% endblock %}
+
+{% block content%}
+<div class="container login-container">
+  <div class="row">
+      <div class="col-md-6 login-form-1">
+          <h3>Φόρμα Ενημέρωσης Λογαριασμού</h3>
+<img class="rounded-circle profile-image" alt="{{ current_user.username }}" src="{{ url_for('static', filename='images/profiles_images/'+current_user.profile_image) }}" data-holder-rendered="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ current_user.username }}">
+
+      <!-- Συμπληρώστε τον html κώδικα για τη φόρμα ενημέρωσης λογαριασμού -->
+      <!-- προσοχή στη δήλωση της φόρμας καθώς θα στέλνει και αρχεία (profile image) εκτός από απλά δεδομένα -->
+
+      </div>
+  </div>
+</div>
+
+
+{% endblock %}

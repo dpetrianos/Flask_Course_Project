@@ -1,9 +1,13 @@
-from flask_wtf.file import FileAllowed
+# from re import M
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, SubmitField, BooleanField, TextAreaField, IntegerField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange
+from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange, ValidationError, Optional
 from flaskMoviesApp.models import User
 
 from datetime import datetime as dt
+
+from flask_login import current_user
 
 ### Συμπληρώστε κάποια από τα imports που έχουν αφαιρεθεί ###
 
@@ -52,7 +56,9 @@ class SignupForm(FlaskForm):
 
     def validate_username(self, username):
         ## Validator για έλεγχο ύπαρξης του user στη βάση
-
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError("Αυτό το username υπάρχει ήδη!")
 
 
 
@@ -65,17 +71,28 @@ class AccountUpdateForm(FlaskForm):
                            validators=[DataRequired(message="Αυτό το πεδίο δε μπορεί να είναι κενό."), 
                                        Email(message="Παρακαλώ εισάγετε ένα σωστό email")])
 
-    image = ## Αρχείο Εικόνας, με επιτρεπόμενους τύπους εικόνων τα 'jpg', 'jpeg', 'png', και μέγιστο μέγεθος αρχείου εικόνας τα 2 MBytes, ΜΗ υποχρεωτικό πεδίο
-
+    # image = ## Αρχείο Εικόνας, με επιτρεπόμενους τύπους εικόνων τα 'jpg', 'jpeg', 'png', και μέγιστο μέγεθος αρχείου εικόνας τα 2 MBytes, ΜΗ υποχρεωτικό πεδίο
+    profile_image = FileField("Εικόνα Προφίλ", validators=[Optional(strip_whitespace=True),
+                                                        FileAllowed(['jpg','jpeg','png'], 'Επιτρέπονται μόνο αρχεία τύπου jpg, jpeg, png'),
+                                                        maxImageSize(max_size=2)])
    
     submit = SubmitField('Αποστολή')
 
 
     def validate_username(self, username):
         ## Validator για έλεγχο ύπαρξης του user στη βάση
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError("Αυτό το username υπάρχει ήδη!")
 
     def validate_email(self, email):
         ## Validator για έλεγχο ύπαρξης του email στη βάση
+        if email.data != current_user.email:
+            email = User.query.filter_by(email=email.data).first()
+            if email:
+                raise ValidationError("Αυτό το email υπάρχει ήδη!")
+
 
 
 
@@ -97,17 +114,30 @@ class LoginForm(FlaskForm):
 
 
 class NewMovieForm(FlaskForm):
-    title = ## Τίτλος Ταινίας, υποχρεωτικό πεδίο κειμένου από 3 έως 50 χαρακτήρες και το αντίστοιχο label και μήνυμα στον validator
+    title = StringField(label="Τίτλος Ταινίας",
+                        validators=[DataRequired(message="Αυτό το πεδίο δε μπορεί να είναι κενό."),
+                        Length(min=3, max=50, message="Αυτό το πεδίο πρέπει να είναι από 3 έως 50 χαρακτήρες")])
+    
+    ## Τίτλος Ταινίας, υποχρεωτικό πεδίο κειμένου από 3 έως 50 χαρακτήρες και το αντίστοιχο label και μήνυμα στον validator
 
 
-    plot = ## Υπόθεση Ταινίας, υποχρεωτικό πεδίο κειμένου, από 5 έως απεριόριστο αριθμό χαρακτήρων και το αντίστοιχο label και μήνυμα στον validator
+    plot = TextAreaField(label="Υπόθεση Ταινίας",
+                        validators=[DataRequired(message="Αυτό το πεδίο δε μπορεί να είναι κενό."), 
+                        Length(min=5, message="Το κείμενο του άρθρου πρέπει να έχει τουλάχιστον 5 χαρακτήρες")])
+
+    ## Υπόθεση Ταινίας, υποχρεωτικό πεδίο κειμένου, από 5 έως απεριόριστο αριθμό χαρακτήρων και το αντίστοιχο label και μήνυμα στον validator
 
     
-    image = ## Αρχείο Εικόνας, με επιτρεπόμενους τύπους εικόνων τα 'jpg', 'jpeg', 'png', και μέγιστο μέγεθος αρχείου εικόνας τα 2 MBytes, ΜΗ υποχρεωτικό πεδίο
+    image = FileField("Αρχείο Εικόνας", validators=[Optional(strip_whitespace=True),
+                                                    FileAllowed(['jpg','jpeg','png'], 'Επιτρέπονται μόνο αρχεία τύπου jpg, jpeg, png'),
+                                                    maxImageSize(max_size=2)])
+    ## Αρχείο Εικόνας, με επιτρεπόμενους τύπους εικόνων τα 'jpg', 'jpeg', 'png', και μέγιστο μέγεθος αρχείου εικόνας τα 2 MBytes, ΜΗ υποχρεωτικό πεδίο
 
-    release_year = ## IntegerField με το έτος πρώτης προβολής της ταινίας, θα παίρνει τιμές από το 1888 έως το current_year που υπολογίζεται στην αρχή του κώδικα εδώ στο forms.py
+    release_year = IntegerField(label="Έτος πρώτης προβολής της ταινίας", validators=[NumberRange(min=1888,max=current_year, message="Ακέραιες τιμές από 1888 έως {{ current_year }}")])
+    ## IntegerField με το έτος πρώτης προβολής της ταινίας, θα παίρνει τιμές από το 1888 έως το current_year που υπολογίζεται στην αρχή του κώδικα εδώ στο forms.py
 
-    rating = ## Βαθμολογία Ταινίας (IntegerField), υποχρεωτικό πεδίο, Αριθμητική τιμή από 1 έως 100, με τη χρήση του validator NumberRange, και με το αντίστοιχο label και μήνυμα στον validator
+    rating = IntegerField(label="Βαθμολογία Ταινίας", validators=[NumberRange(min=1,max=100, message="Αριθμητική τιμή από 1 έως 100")])
+    ## Βαθμολογία Ταινίας (IntegerField), υποχρεωτικό πεδίο, Αριθμητική τιμή από 1 έως 100, με τη χρήση του validator NumberRange, και με το αντίστοιχο label και μήνυμα στον validator
 
 
     submit = SubmitField(label='Αποστολή')

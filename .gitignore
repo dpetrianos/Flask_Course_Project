@@ -1,6 +1,8 @@
+__pycache__/
 *.zip
 *.pyc
 
 # Environments
 venv/
 .venv
+

@@ -15,7 +15,7 @@
 		  
 			  <div class="mb-3">
 			    {{ form.email.label(class="form-label") }}
-			    {{ form.email(class="form-control") }}
+			    {{ form.email(class="form-control", required=False) }}
 			    <div id="emailHelp" class="form-text">Παρακαλώ δώστε το email σας.</div>
 					{% if form.email.errors %}
 				    <ul class=errors>
@@ -28,7 +28,7 @@
 
 			  <div class="mb-3">
 			    {{ form.password.label(class="form-label") }}
-			    {{ form.password(type="password", class="form-control") }}
+			    {{ form.password(type="password", class="form-control", required=False) }}
 			    <div id="passwordHelp" class="form-text">Παρακαλώ δώστε το password σας.</div>
 					{% if form.password.errors %}
 				    <ul class=errors>

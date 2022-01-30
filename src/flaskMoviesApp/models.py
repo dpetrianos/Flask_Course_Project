@@ -1,3 +1,4 @@
+# from email.policy import default
 from flaskMoviesApp import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
@@ -22,14 +23,20 @@ class User(db.Model, UserMixin):
 
 
 class Movie(db.Model):
-    id = ## δήλωση id ταινίας, πρωτεύον κλειδί
-    title = ## δήλωση τίτλου (50 χαρακτήρες), υποχρεωτικό πεδίο
-    plot = ## δήλωση υπόθεσης ταινίας (κείμενο με απεριόριστο αριθμό χαρακτήρων), υποχρεωτικό πεδίο
-    image = ## δήλωση ονόματος εικόνας ταινίας (40 χαρακτήρες) με προεπιλεγμένο τίτλο:'default_movie_image.png', ΜΗ υποχρεωτικό πεδίο
-    rating = ## Integer, δήλωση πεδίου βαθμολογίας ταινίας, με προεπιλεγμένη τιμή το μηδέν: default=1, υποχρεωτικό πεδίο
-    release_year = ## Integer, δήλωση πεδίου χρονιάς πρώτης προβολής της ταινίας με προεπιλεγμένη τιμή default=2000, υποχρεωτικό πεδίο
-    date_created ## δήλωση ημερομηνίας δημιουργίας ταινίας τύπου DateTime με προεπιλεγμένη τιμή: default=datetime.utcnow
-    user_id = ## δήλωση ID του χρήστη που αποθήκευσε την ταινία, ForeignKey στο πεδίο id του πίνακα user, υποχρεωτικό πεδίο
+    id = db.Column(db.Integer, primary_key=True)  ## δήλωση id ταινίας, πρωτεύον κλειδί
+    title = db.Column(db.String(50), nullable=False) ## δήλωση τίτλου (50 χαρακτήρες), υποχρεωτικό πεδίο
+    plot = db.Column(db.Text(), nullable=False) 
+            ## δήλωση υπόθεσης ταινίας (κείμενο με απεριόριστο αριθμό χαρακτήρων), υποχρεωτικό πεδίο
+    image =  db.Column(db.String(40), nullable=False, default='default_movie_image.png') 
+            ## δήλωση ονόματος εικόνας ταινίας (40 χαρακτήρες) με προεπιλεγμένο τίτλο:'default_movie_image.png', ΜΗ υποχρεωτικό πεδίο
+    rating = db.Column(db.Integer, nullable=False, default=1) 
+            ## Integer, δήλωση πεδίου βαθμολογίας ταινίας, με προεπιλεγμένη τιμή το μηδέν: default=1, υποχρεωτικό πεδίο
+    release_year =  db.Column(db.Integer, nullable=False, default=2000) 
+            ## Integer, δήλωση πεδίου χρονιάς πρώτης προβολής της ταινίας με προεπιλεγμένη τιμή default=2000, υποχρεωτικό πεδίο
+    date_created =  db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+            ## δήλωση ημερομηνίας δημιουργίας ταινίας τύπου DateTime με προεπιλεγμένη τιμή: default=datetime.utcnow
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id') , nullable=False) 
+            ## δήλωση ID του χρήστη που αποθήκευσε την ταινία, ForeignKey στο πεδίο id του πίνακα user, υποχρεωτικό πεδίο
 
     def __repr__(self):
         return f"{self.date_created}:{self.title}:{self.rating}"

@@ -16,7 +16,7 @@
 
 			  <div class="mb-3">
 			    {{ form.username.label(class="form-label") }}
-			    {{ form.username(class="form-control") }}
+			    {{ form.username(class="form-control", required=False) }}
 			    <div id="usernameHelp" class="form-text">Παρακαλώ δώστε όνομα χρήστη.</div>
 					{% if form.username.errors %}
 				    <ul class=errors>
@@ -28,7 +28,7 @@
 			  </div>
 			  <div class="mb-3">
 			    {{ form.email.label(class="form-label") }}
-			    {{ form.email(class="form-control") }}
+			    {{ form.email(class="form-control", required=False) }}
 			    <div id="emailHelp" class="form-text">Παρακαλώ δώστε το email σας.</div>
 					{% if form.email.errors %}
 				    <ul class=errors>
@@ -40,7 +40,7 @@
 			  </div>
 			  <div class="mb-3">
 			    {{ form.password.label(class="form-label") }}
-			    {{ form.password(class="form-control", type="password") }}
+			    {{ form.password(class="form-control", type="password", required=False) }}
 			    <div id="passwordHelp" class="form-text">Παρακαλώ δώστε το password σας.</div>
 					{% if form.password.errors %}
 				    <ul class=errors>
@@ -53,7 +53,7 @@
 
 			  <div class="mb-3">
 			    {{ form.password2.label(class="form-label") }}
-			    {{ form.password2(class="form-control", type="password") }}
+			    {{ form.password2(class="form-control", type="password", required=False) }}
 			    <div id="password2Help" class="form-text">Παρακαλώ δώστε ξανά το password σας για επικύρωση.</div>
 					{% if form.password2.errors %}
 				    <ul class=errors>
@@ -68,11 +68,6 @@
 			  	{{ form.submit(class="btn btn-primary") }}
 			  </div>
 			</form>
-
-
-
-
-
 
 	    </div>
 	</div>

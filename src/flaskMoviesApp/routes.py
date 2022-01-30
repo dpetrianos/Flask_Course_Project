@@ -1,3 +1,4 @@
+from platform import release
 from flask import render_template, redirect, url_for, request, flash, abort
 from flaskMoviesApp.forms import SignupForm, LoginForm, NewMovieForm, AccountUpdateForm
 
@@ -240,6 +241,8 @@ def new_movie():
     if request.method == 'POST' and form.validate_on_submit():
         title = form.title.data
         plot = form.plot.data
+        release_year = form.release_year.data
+        rating = form.rating.data
 
         # print(article_title, article_body)
         # article = Article(article_title=article_title, article_body=article_body, user_id=current_user.id)
@@ -251,11 +254,14 @@ def new_movie():
             movie = Movie(title=title, 
                             plot=plot, 
                             author=current_user,
+                            release_year=release_year,
+                            rating=rating,
                             image=image_file)
         else:
-            movie = Movie(title=title, plot=plot, author=current_user)
+            movie = Movie(title=title, plot=plot, author=current_user, release_year=release_year,rating=rating)
        
         db.session.add(movie)
+        db.session.commit()
 
         flash(f'Η ταινία με τίτλο: "{title}" δημιουργήθηκε με επιτυχία', 'success')
 

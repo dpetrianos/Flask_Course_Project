@@ -73,13 +73,14 @@
       <div>
         <!-- Εδώ θα πρέπει να μπεί ο κώδικας για το pagination της σελίδας -->
         <!-- left_edge=2, right_edge=2, left_current=1, right_current=1 -->
-        {% for page_number in movies.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
+        <!-- To right_current=1 το άλλαξα σε right_current=2 , γιατί δεν μου έδειχνε την επόμενη σελίδα π.χ σε σύνολο 5 pages και ενώ ήμουν στην 2 δεν μπορούσα να πάω δτην επόμενη (την 3) -->
+        {% for page_number in movies.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=2) %}
     
             {% if page_number %}
                 {% if page_number == movies.page %}
-                    <a class="btn btn-primary" href="{{ url_for('root', page=page_number) }}"> {{ page_number}}</a>
+                    <a class="btn btn-primary" href="{{ url_for('root', page=page_number, ordering_by=ordering_by) }}"> {{ page_number}}</a>
                 {% else %}
-                    <a class="btn btn-outline-primary" href="{{ url_for('root', page=page_number) }}"> {{ page_number}}</a>
+                    <a class="btn btn-outline-primary" href="{{ url_for('root', page=page_number, ordering_by=ordering_by) }}"> {{ page_number}}</a>
                 {% endif %}
             {% else %}
                 <span>...</span>

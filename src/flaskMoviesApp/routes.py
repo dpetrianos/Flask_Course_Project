@@ -63,11 +63,9 @@ def internal_server_error(e):
 
 ### Αρχική Σελίδα ###
 @app.route("/home/")
-@app.route("/", methods=['POST', 'GET'])
+@app.route("/")
 def root():
     
-    ordering_by = request.args.get('ordering_by')
-    # print(ordering_by)
     ## Να προστεθεί σε αυτό το view ότι χρειάζεται για την ταξινόμηση
     ## ανά ημερομηνία εισαγωγής στη βάση, ανά έτος προβολής και ανά rating
     ## με σωστή σελιδοποίηση για την κάθε περίπτωση.
@@ -75,6 +73,8 @@ def root():
     ## Pagination: page value from 'page' parameter from url
 
     page = request.args.get('page', 1, type=int)
+    
+    ordering_by = request.args.get('ordering_by')
 
     if ordering_by == 'rating':
         movies = Movie.query.order_by(Movie.rating.desc()).paginate(per_page=5, page=page)
@@ -88,7 +88,7 @@ def root():
     ## Υπενθύμιση: το context είναι το σύνολο των παραμέτρων που περνάμε
     ##             μέσω της render_template μέσα στα templates μας
     ##             στην παρακάτω περίπτωση το context περιέχει μόνο το movies=movies
-    return render_template("index.html", movies=movies)
+    return render_template("index.html", movies=movies, ordering_by=ordering_by)
 
 
 
@@ -325,13 +325,21 @@ def movies_by_author(author_id):
     ## Pagination: page value from 'page' parameter from url
     page = request.args.get('page', 1, type=int)
 
-
     user = User.query.get_or_404(author_id)
+    print(author_id)
             # Query για ανάσυρση του χρήστη από τη βάση δεδομένων βάσει του id του ('author_id'), ή εμφάνιση σελίδας 404 page not found
 
+    ordering_by = request.args.get('ordering_by')
 
-
-    movies = Movie.query.filter_by(author=user).order_by(Movie.date_created.desc()).paginate(per_page=3, page=page)    
+    if ordering_by == 'rating':
+        # movies = Movie.query.order_by(Movie.rating.desc()).paginate(per_page=3, page=page)
+        movies = Movie.query.filter_by(author=user).order_by(Movie.rating.desc()).paginate(per_page=3, page=page) 
+    elif ordering_by == 'release_year':
+        # movies = Movie.query.order_by(Movie.release_year.desc()).paginate(per_page=3, page=page)
+        movies = Movie.query.filter_by(author=user).order_by(Movie.release_year.desc()).paginate(per_page=3, page=page)    
+    else:
+        # movies = Movie.query.order_by(Movie.date_created.desc()).paginate(per_page=3, page=page)
+        movies = Movie.query.filter_by(author=user).order_by(Movie.date_created.desc()).paginate(per_page=3, page=page)    
             ## Query για ανάσυρση των ταινιών βάσει χρήστη από τη βάση δεδομένων με το σωστό pagination και ταξινόμηση
 
         ## Για σωστή ταξινόμηση ίσως πρέπει να περάσετε κάτι επιπλέον μέσα στο context (εκτός από τον author και τις ταινίες).
@@ -340,7 +348,7 @@ def movies_by_author(author_id):
         ##             στην παρακάτω περίπτωση το context περιέχει τα movies=movies, author=user
 
 
-    return render_template("movies_by_author.html", movies=movies, author=user)
+    return render_template("movies_by_author.html", movies=movies, author=user, ordering_by=ordering_by)
 
 
 

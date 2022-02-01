@@ -67,13 +67,13 @@
       {% endfor %}
       <div>
         <!-- Εδώ θα πρέπει να μπεί ο κώδικας για το pagination της σελίδας (παρομοίως με την αρχική σελίδα) -->
-        {% for page_number in movies.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
+        {% for page_number in movies.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=2) %}
     
         {% if page_number %}
             {% if page_number == movies.page %}
-                <a class="btn btn-primary" href="{{ url_for('root', page=page_number) }}"> {{ page_number}}</a>
+                <a class="btn btn-primary" href="{{ url_for('movies_by_author', author_id=author.id, page=page_number, ordering_by=ordering_by) }}"> {{ page_number}}</a>
             {% else %}
-                <a class="btn btn-outline-primary" href="{{ url_for('root', page=page_number) }}"> {{ page_number}}</a>
+                <a class="btn btn-outline-primary" href="{{ url_for('movies_by_author', author_id=author.id, page=page_number, ordering_by=ordering_by) }}"> {{ page_number}}</a>
             {% endif %}
         {% else %}
             <span>...</span>

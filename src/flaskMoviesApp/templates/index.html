@@ -43,8 +43,9 @@
               <div class="col col-md-12">
                 <div class="main-movie-title">
                     <a class="title" href="{{ url_for('movie', movie_id=movie.id) }}">{{ movie.title | safe }}</a>
-                    <span class="release_year">({{ movie.release_year }})</span>
-                    <span class="rating">{{ movie.rating/10 }}</span>
+                    <span class="release_year">&nbsp;({{ movie.release_year }})</span>
+                    <span class="rating">&nbsp;[{{ movie.rating/10 }}]</span>
+                    <img src="{{ url_for('static', filename='images/star.png') }}" alt="" class="img-responsive a_image" height="20px">
                 </div>
                 
                 <small class="movie_date">[{{ movie.date_created.strftime('%d-%m-%Y  %H:%M:%S' ) }}]</small>

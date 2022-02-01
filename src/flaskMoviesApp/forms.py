@@ -121,19 +121,19 @@ class NewMovieForm(FlaskForm):
     ## Τίτλος Ταινίας, υποχρεωτικό πεδίο κειμένου από 3 έως 50 χαρακτήρες και το αντίστοιχο label και μήνυμα στον validator
 
 
-    plot = TextAreaField(label="Υπόθεση Ταινίας",
+    plot = TextAreaField(label="Υπόθεση της ταινίας",
                         validators=[DataRequired(message="Αυτό το πεδίο δε μπορεί να είναι κενό."), 
                         Length(min=5, message="Το κείμενο του άρθρου πρέπει να έχει τουλάχιστον 5 χαρακτήρες")])
 
     ## Υπόθεση Ταινίας, υποχρεωτικό πεδίο κειμένου, από 5 έως απεριόριστο αριθμό χαρακτήρων και το αντίστοιχο label και μήνυμα στον validator
 
     
-    image = FileField("Αρχείο Εικόνας", validators=[Optional(strip_whitespace=True),
+    image = FileField("Εικόνα της ταινίας", validators=[Optional(strip_whitespace=True),
                                                     FileAllowed(['jpg','jpeg','png'], 'Επιτρέπονται μόνο αρχεία τύπου jpg, jpeg, png'),
                                                     maxImageSize(max_size=2)])
     ## Αρχείο Εικόνας, με επιτρεπόμενους τύπους εικόνων τα 'jpg', 'jpeg', 'png', και μέγιστο μέγεθος αρχείου εικόνας τα 2 MBytes, ΜΗ υποχρεωτικό πεδίο
 
-    release_year = IntegerField(label="Έτος πρώτης προβολής της ταινίας", validators=[NumberRange(min=1888,max=current_year, message="Ακέραιες τιμές από 1888 έως {{ current_year }}")])
+    release_year = IntegerField(label="Έτος πρώτης προβολής της ταινίας", validators=[NumberRange(min=1888,max=current_year, message="Ακέραιες τιμές από 1888 έως " + str(current_year)  + ".")])
     ## IntegerField με το έτος πρώτης προβολής της ταινίας, θα παίρνει τιμές από το 1888 έως το current_year που υπολογίζεται στην αρχή του κώδικα εδώ στο forms.py
 
     rating = IntegerField(label="Βαθμολογία Ταινίας", validators=[NumberRange(min=1,max=100, message="Αριθμητική τιμή από 1 έως 100")])

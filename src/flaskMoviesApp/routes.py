@@ -1,3 +1,4 @@
+from email.policy import default
 from platform import release
 from flask import render_template, redirect, url_for, request, flash, abort
 from flaskMoviesApp.forms import SignupForm, LoginForm, NewMovieForm, AccountUpdateForm
@@ -13,7 +14,7 @@ import os
 
 from datetime import datetime as dt
 
-### OK !!!!! Συμπληρώστε κάποια από τα imports που έχουν αφαιρεθεί ###
+### Συμπληρώστε κάποια από τα imports που έχουν αφαιρεθεί ###
 
 current_year = dt.now().year
 
@@ -47,28 +48,40 @@ def page_not_found(e):
     return render_template('errors/404.html'), 404
 
 @app.errorhandler(415)
-def unsupported_medias_type(e):
+def unsupported_media_type(e):
     # note that we set the 415 status explicitly
     return render_template('errors/415.html'), 415
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    # note that we set the 500 status explicitly
+    return render_template('errors/500.html'), 500
 
 ### ERROR HANDLERS END ###
 
 
 
-
 ### Αρχική Σελίδα ###
 @app.route("/home/")
-@app.route("/")
+@app.route("/", methods=['POST', 'GET'])
 def root():
-
+    
+    ordering_by = request.args.get('ordering_by')
+    # print(ordering_by)
     ## Να προστεθεί σε αυτό το view ότι χρειάζεται για την ταξινόμηση
     ## ανά ημερομηνία εισαγωγής στη βάση, ανά έτος προβολής και ανά rating
     ## με σωστή σελιδοποίηση για την κάθε περίπτωση.
 
     ## Pagination: page value from 'page' parameter from url
+
     page = request.args.get('page', 1, type=int)
 
-    movies = Movie.query.order_by(Movie.date_created.desc()).paginate(per_page=5, page=page)
+    if ordering_by == 'rating':
+        movies = Movie.query.order_by(Movie.rating.desc()).paginate(per_page=5, page=page)
+    elif ordering_by == 'release_year':
+        movies = Movie.query.order_by(Movie.release_year.desc()).paginate(per_page=5, page=page)
+    else:
+        movies = Movie.query.order_by(Movie.date_created.desc()).paginate(per_page=5, page=page)
             ## Query για ανάσυρση των ταινιών από τη βάση δεδομένων με το σωστό pagination και ταξινόμηση
 
     ## Για σωστή ταξινόμηση ίσως πρέπει να περάσετε κάτι επιπλέον μέσα στο context.
@@ -318,7 +331,7 @@ def movies_by_author(author_id):
 
 
 
-    movies = Movie.query.filter_by(author=user).order_by(Movie.date_created.desc()).paginate(per_page=5, page=page)    
+    movies = Movie.query.filter_by(author=user).order_by(Movie.date_created.desc()).paginate(per_page=3, page=page)    
             ## Query για ανάσυρση των ταινιών βάσει χρήστη από τη βάση δεδομένων με το σωστό pagination και ταξινόμηση
 
         ## Για σωστή ταξινόμηση ίσως πρέπει να περάσετε κάτι επιπλέον μέσα στο context (εκτός από τον author και τις ταινίες).
@@ -347,17 +360,21 @@ def edit_movie(movie_id):
 
     movie = Movie.query.filter_by(id=movie_id, author=current_user).first_or_404()
             ## Ανάκτηση ταινίας βάσει των movie_id, user_id, ή, εμφάνιση σελίδας 404 page not found
+    
+    # print(movie.title)
 
     ## Έλεγχος αν βρέθηκε η ταινία
     ## αν ναι, αρχικοποίηση της φόρμας ώστε τα πεδία να είναι προσυμπληρωμένα
     ## έλεγχος των πεδίων (validation) και αλλαγή (ή προσθήκη εικόνας) στα στοιχεία της ταινίας
     ## αν δε βρέθηκε η ταινία, ανακατεύθυνση στην αρχική σελίδα και αντίστοιχο flash μήνυμα στο χρήστη
 
-    form = NewMovieForm(title=movie.title, plot=movie.plot)
-
+    form = NewMovieForm(title=movie.title, plot=movie.plot, release_year=movie.release_year, rating=movie.rating)
+    
     if request.method == 'POST' and form.validate_on_submit():
         movie.title = form.title.data
         movie.plot = form.plot.data
+        movie.release_year = form.release_year.data
+        movie.rating = form.rating.data
 
         if form.image.data:
             try:
@@ -373,7 +390,7 @@ def edit_movie(movie_id):
 
         return redirect(url_for('movie', movie_id=movie.id))
 
-        # return render_template("new_movie.html", form=form, movie=movie, page_title="Αλλαγή Ταινίας")
+    return render_template("new_movie.html", form=form, movie=movie, page_title="Αλλαγή Ταινίας")
     
 
     flash(f'Δε βρέθηκε η ταινία', 'info')

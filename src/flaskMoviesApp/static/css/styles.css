@@ -10,9 +10,13 @@ body {
 	font-size: 2em;
 	font-weight: bold;
 	text-decoration: none;
-	color:  black;
+	color: black;
 }
 
+.title{
+	text-decoration: none;
+	color: black;
+}
 .movie_date,.movie_date:hover{
 	font-size: 1em;
 	color:  black;
@@ -41,12 +45,12 @@ body {
 
 .movie_title:link, .movie_title:hover, .movie_title:visited{
 	text-decoration: none;
-	color:  black;
+	color: black;
 }
 
-.main-movie-category:hover,.main-movie-title:hover,.author-name{
+.main-movie-category:hover,.main-movie-title:hover,.author-name, .title:hover{
 	text-decoration: underline;
-	color:  black;
+	color: black;
 }
 
 footer{

@@ -257,8 +257,6 @@ def new_movie():
         release_year = form.release_year.data
         rating = form.rating.data
 
-        # print(article_title, article_body)
-        # article = Article(article_title=article_title, article_body=article_body, user_id=current_user.id)
         if form.image.data:
             try:
                 image_file =  image_save(form.image.data, 'movies_images', (640,360))
@@ -401,9 +399,9 @@ def edit_movie(movie_id):
     return render_template("new_movie.html", form=form, movie=movie, page_title="Αλλαγή Ταινίας")
     
 
-    flash(f'Δε βρέθηκε η ταινία', 'info')
+    # flash(f'Δε βρέθηκε η ταινία', 'info')
 
-    return redirect(url_for("root"))
+    # return redirect(url_for("root"))
 
 
 

@@ -326,7 +326,7 @@ def movies_by_author(author_id):
     page = request.args.get('page', 1, type=int)
 
     user = User.query.get_or_404(author_id)
-    print(author_id)
+    # print(author_id)
             # Query για ανάσυρση του χρήστη από τη βάση δεδομένων βάσει του id του ('author_id'), ή εμφάνιση σελίδας 404 page not found
 
     ordering_by = request.args.get('ordering_by')

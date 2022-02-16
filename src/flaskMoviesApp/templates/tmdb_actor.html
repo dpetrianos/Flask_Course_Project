@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Actor
+{% endblock title %}
+
+{% block content %}
+
+<!-- current_year = dt.now().year -->
+
+<main role="main" class="container">
+
+    <h2 class="aba_header">Βιογραφικό {{ data['name'] }} από το TMDB </h2>
+    <hr>
+
+
+    <!-- Τα παρακάτω δύο κουμπιά θα πρέπει να ταξινομούν τη λίστα ανά βαθμολογία ή έτος πρώτης προβολής αντίστοιχα -->
+
+    <div class="align-buttons"><a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('root', ordering_by='rating') }}">Ταξινόμηση βάσει βαθμολογίας</a>
+      &nbsp;&nbsp;&nbsp; <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('root', ordering_by='release_year') }}">Ταξινόμηση βάσει έτους προβολής</a></div>
+    <hr>
+
+
+    {% if not data['errors'] and not data.success == false %}
+        <!-- SUCCESS !!! -->
+
+        <!-- Id : {{ data['id'] }} <br>
+        name : {{ data['name'] }} <br>
+        birthday : {{ data['birthday'] }} <br>
+        deathday : {{ data['deathday'] }} <br>
+        place_of_birth : {{ data['place_of_birth'] }} <br>
+        popularity : {{ data['popularity'] }} <br>
+        gender :{{ data['gender'] }} <br>
+        profile_path : {{ data['profile_path'] }} <br> -->
+
+
+        <!-- <hr> -->
+        <div class="row my-3 p-3 bg-body rounded shadow-sm">
+            <div class="movie-container">
+
+                <div class="col col-md-12">
+                    {% if data.profile_path %}
+                        <img src="{{ 'https://image.tmdb.org/t/p/w500' +  data['profile_path'] }}"  alt="{{ data.name }}" title="{{ data.name }}" class="img-responsive mx-auto d-block a_image" height="400px">
+                    {% endif %}
+                    <br>
+                </div>
+                <div class="col col-md-12">
+ 
+                    <p class="main-movie-title">
+                        {{ data.name }} 
+                        {% if not data['deathday'] %}
+                            ({{ current_year - ((data.birthday.split("-")[0]) | int) }}) 
+                        {% else %}
+                        {% endif %}
+                        [{{ data.place_of_birth }}]
+                    </p>
+
+                    <div class="main-actor-full-text">
+                            {{ data.biography | safe }} <br>
+                    </div>
+                </div>
+                <hr>    
+            </div>
+        </div>
+        
+
+    {% else %}
+      <div class="alert alert-info alert-dismissible fade show" role="alert">Δε βρέθηκε καμμία ταινία</div>
+    {% endif %}
+
+</main>
+
+{% endblock content %}

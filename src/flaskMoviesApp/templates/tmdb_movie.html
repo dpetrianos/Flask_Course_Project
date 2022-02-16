@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Search
+{% endblock title %}
+
+{% block content %}
+
+<main role="main" class="container">
+
+    <h2 class="aba_header">Εύρεση ταινιών από το TMDB </h2>
+    <hr>
+
+
+    <!-- Τα παρακάτω δύο κουμπιά θα πρέπει να ταξινομούν τη λίστα ανά βαθμολογία ή έτος πρώτης προβολής αντίστοιχα -->
+
+    <div class="align-buttons"><a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('root', ordering_by='rating') }}">Ταξινόμηση βάσει βαθμολογίας</a>
+      &nbsp;&nbsp;&nbsp; <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('root', ordering_by='release_year') }}">Ταξινόμηση βάσει έτους προβολής</a></div>
+    <hr>
+
+
+    {% if not data['errors'] and not data.success == false %}
+        SUCCESS !!!
+
+        Id : {{ data['id'] }} <br>
+        Title : {{ data['title'] }} <br>
+        Plot : {{ data['overview'] }} <br>
+        release_year : {{ data['release_date'].split("-")[0] }} <br>
+        vote_average : {{ data['vote_average'] }} <br>
+        vote_count : {{ data['vote_count'] }} <br>
+        genres :{{ data['genres'] }} <br>
+        poster_path : {{ data['poster_path'] }} <br>
+        biography : {{ data['biography'] }} <br> 
+
+
+
+        <hr>
+        <div class="row my-3 p-3 bg-body rounded shadow-sm">
+            <div class="movie-container">
+
+                <div class="col col-md-12">
+                    {% if data.poster_path %}
+                        <img src="{{ 'https://image.tmdb.org/t/p/w500' +  data['poster_path'] }}"  alt="{{ data.title }}" title="{{ data.title }}" class="img-responsive mx-auto d-block a_image" height="400px">
+                    {% endif %}
+                    <br>
+                </div>
+                <div class="col col-md-12">
+ 
+                    <p class="main-movie-title">
+                        {{ data.title }} ({{ data.release_date.split("-")[0] }}) [{{ data.vote_average }}]
+                    </p>
+
+                    <div class="main-movie-full-text">
+                            {{ data.overview}} <br>
+                    </div>
+                </div>
+                <hr>    
+                <h2>Cast</h2>
+                <div class="tmdb-container">
+                    {% for actor in data['credits']['cast'] %}
+                        {% if actor['profile_path'] %}
+                        <div class="tmdb-movie-container">
+                            <img src="{{ 'https://image.tmdb.org/t/p/w500' +  actor['profile_path'] }}"  alt="{{ actor['name'] }}" title="{{ actor['title'] }}" class="img-responsive mx-auto d-block a_image" height="200px">
+                            <a class="tmdb-title" href="{{ url_for('tmdb_actor', actor_id=actor.id) }}">{{ actor.name | safe }}</a>
+                            <!-- {{ actor['name'] }} <br> -->
+                            <!-- id :"{{ actor['id'] }}" <br> -->
+
+                            <!-- biography :"{{ actor['biography'] }} " -->
+                           
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+
+    {% else %}
+      <div class="alert alert-info alert-dismissible fade show" role="alert">Δε βρέθηκε καμμία ταινία</div>
+    {% endif %}
+
+</main>
+
+{% endblock content %}

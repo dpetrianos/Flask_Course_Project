@@ -1,5 +1,6 @@
-from email.policy import default
-from platform import release
+# from crypt import methods
+# from email.policy import default
+# from platform import release
 from flask import render_template, redirect, url_for, request, flash, abort
 from flaskMoviesApp.forms import SignupForm, LoginForm, NewMovieForm, AccountUpdateForm
 
@@ -12,9 +13,12 @@ import secrets
 from PIL import Image
 import os
 
+import requests, json
 from datetime import datetime as dt
 
 ### Συμπληρώστε κάποια από τα imports που έχουν αφαιρεθεί ###
+
+API = "api_key=b55278248781020077030462c2f64f46"
 
 current_year = dt.now().year
 
@@ -284,8 +288,55 @@ def new_movie():
 
 
 
+@app.route("/search_movies/", methods=["GET", "POST"])
+@login_required
+def search_movies():
+
+    searching_by = request.args.get('searching_by')
+    # email = form.email.data
+    print(searching_by)
+    # form = NewMovieForm()
+    # req = requests.get("https://api.themoviedb.org/3/movie/85?api_key=b55278248781020077030462c2f64f46")
+    # req = requests.get("https://api.themoviedb.org/3/movie/624860?api_key=b55278248781020077030462c2f64f46")
+    # req = requests.get("https://api.themoviedb.org/3/movie/624860?api_key=b55278248781020077030462c2f64f46")
+    data = None
+    if searching_by:
+        req = requests.get("https://api.themoviedb.org/3/search/movie/?api_key=b55278248781020077030462c2f64f46&language=el&query=" + searching_by)
+    else:
+        return render_template('search_movies.html', data=data, api=API)
+
+    # data = req.content
+    # print(req.json())
+    data = json.loads(req.content) 
+    # print(data)
+    return render_template('search_movies.html', data=data, searching_by=searching_by, api=API)
 
 
+
+@app.route("/tmdb_movie/<int:movie_id>", methods=["GET"])
+def tmdb_movie(movie_id):
+
+    ## Ανάκτηση της ταινίας με βάση το movie_id
+    ## ή εμφάνιση σελίδας 404 page not found
+    # https://api.themoviedb.org/3/movie/85?api_key=b55278248781020077030462c2f64f46
+
+    ppp = "https://api.themoviedb.org/3/movie/" + str(movie_id) + "?api_key=b55278248781020077030462c2f64f46"
+    print(ppp)
+    req = requests.get("https://api.themoviedb.org/3/movie/" + str(movie_id) + "?api_key=b55278248781020077030462c2f64f46&language=el&append_to_response=credits,videos&include_video_language=el")
+    data = json.loads(req.content) 
+    # print(data)
+    # movie = Movie.query.get_or_404(movie_id)
+
+    return render_template("tmdb_movie.html", data=data, api=API)
+
+
+@app.route("/tmdb_actor/<int:actor_id>", methods=["GET"])
+def tmdb_actor(actor_id):
+    req = requests.get("https://api.themoviedb.org/3/person/" + str(actor_id) + "?api_key=b55278248781020077030462c2f64f46&language=")
+    data = json.loads(req.content) 
+    # print(data)
+    
+    return render_template("tmdb_actor.html", data=data, current_year=current_year)
 
 
 ### Πλήρης σελίδα ταινίας ###

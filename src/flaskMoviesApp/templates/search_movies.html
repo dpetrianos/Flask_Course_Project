@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Search
+{% endblock title %}
+
+{% block content %}
+
+    <h2 class="aba_header">Εύρεση ταινιών από το TMDB ({{ searching_by }})</h2>
+    <hr>
+
+
+    <!-- Τα παρακάτω δύο κουμπιά θα πρέπει να ταξινομούν τη λίστα ανά βαθμολογία ή έτος πρώτης προβολής αντίστοιχα -->
+
+    <div class="align-buttons"><a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('root', ordering_by='rating') }}">Ταξινόμηση βάσει βαθμολογίας</a>
+      &nbsp;&nbsp;&nbsp; <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('root', ordering_by='release_year') }}">Ταξινόμηση βάσει έτους προβολής</a></div>
+    <hr>
+
+    <!-- {{ data }} -->
+    
+    {% if not data['errors'] %}
+        CORRECT
+        {{ data.total_pages }}
+    
+
+        {{ data['id'] }} 
+        {{ data['title'] }} 
+        {{ data['overview'] }} 
+        {{ data['release_date'] }} 
+        {{ data['vote_average'] }} 
+        {{ data['vote_count'] }} 
+        {{ data['genres'] }} 
+        {{ data['poster_path'] }} 
+
+        <hr>
+        <div class="tmdb-container">
+        
+        {% if data.total_pages %}        
+            {% for movie in data.results %}
+            <div class="tmdb-movie-container">
+                <!-- <div> 
+                    TMDB_id : {{ movie.id }} <br>
+                </div> -->
+                <div>
+                {% if movie.poster_path %}
+                    <img src="{{ 'https://image.tmdb.org/t/p/w500' +  movie['poster_path'] }}"  alt="No image" class="img-responsive tmdb-image">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/movies_images/default_movie_image.png') }}" alt="No image" class="img-responsive tmdb-image">
+                {% endif %}
+                <br>
+                </div>
+
+                <!-- {{ movie.title }} <br> -->
+                <div class="tmdb-detail">
+                    <a class="tmdb-title" href="{{ url_for('tmdb_movie', movie_id=movie.id) }}">{{ movie.title | safe }}</a>
+                    <div>
+                    <span class="release_year">&nbsp;({{ movie.release_date.split('-')[0] }})</span>
+                    <span class="rating">&nbsp;[{{ movie.vote_average }}]</span>
+                    <img src="{{ url_for('static', filename='images/star.png') }}" alt="" height="25px">
+                    </div>
+                </div>
+                <!-- <div>
+                    {{ movie.overview}} <br>
+                </div> -->
+            
+                 
+            
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">Δε βρέθηκε καμμία ταινία</div>
+        {% endif %} 
+        </div>
+    {% else %}
+      <div class="alert alert-info alert-dismissible fade show" role="alert">Δε βρέθηκε καμμία ταινία</div>
+    {% endif %}
+
+{% endblock content %}

@@ -1,5 +1,5 @@
 # from email.policy import default
-from flaskMoviesApp import db, login_manager
+from src.flaskMoviesApp import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
 

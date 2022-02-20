@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, SubmitField, BooleanField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange, ValidationError, Optional
-from flaskMoviesApp.models import User
+from src.flaskMoviesApp.models import User
 
 from datetime import datetime as dt
 

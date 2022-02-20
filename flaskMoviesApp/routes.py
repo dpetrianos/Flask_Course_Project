@@ -2,11 +2,11 @@
 # from email.policy import default
 # from platform import release
 from flask import render_template, redirect, url_for, request, flash, abort
-from src.flaskMoviesApp.forms import SignupForm, LoginForm, NewMovieForm, AccountUpdateForm
+from flaskMoviesApp.forms import SignupForm, LoginForm, NewMovieForm, AccountUpdateForm
 
-from src.flaskMoviesApp import app, db, bcrypt
+from flaskMoviesApp import app, db, bcrypt
 
-from src.flaskMoviesApp.models import User, Movie
+from flaskMoviesApp.models import User, Movie
 from flask_login import login_user, current_user, logout_user, login_required
 
 import secrets
